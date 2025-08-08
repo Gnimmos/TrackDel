@@ -4,7 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DeliveryService {
-  static const String baseUrl = 'http://4.184.202.172:3212/api'; 
+  static String? baseUrl = dotenv.env['API_URL'];
+  static String? CWDbaseUrl = dotenv.env['COORD_API_URL'];
 
   /// Fetch active deliveries for a given driver
   static Future<List<Map<String, dynamic>>> fetchActiveDeliveries(int driverId) async {
@@ -192,4 +193,49 @@ static Future<Map<String, dynamic>?> fetchDriverStats({
 
     return null;
   }
+
+  static Future<Map<String, dynamic>> markAsDeliveredCWD({
+  required String externalOrderId,
+  required String apiKey,
+}) async {
+  final String url = '$CWDbaseUrl/MarkOrderAsDelivered';
+
+  final payload = {
+    "request": {
+      "ExternalOrderId": externalOrderId,
+      "ApiKey": apiKey,
+    }
+  };
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(payload),
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final result = json['d'] ?? json;
+      return {
+        'success': result['success'] ?? result['Success'] ?? false,
+        'message': result['message'] ?? result['Message'] ?? 'Unknown error',
+        ...result,
+      };
+    } else {
+      print('[markAsDeliveredCWD] HTTP error: ${response.statusCode}');
+      return {
+        'success': false,
+        'message': 'HTTP error: ${response.statusCode}',
+      };
+    }
+  } catch (e) {
+    print('[markAsDeliveredCWD] Exception: $e');
+    return {
+      'success': false,
+      'message': 'Exception: $e',
+    };
+  }
+}
+
 }

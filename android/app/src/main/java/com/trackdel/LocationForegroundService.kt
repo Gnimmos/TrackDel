@@ -1,4 +1,4 @@
-package com.trackdel
+package com.ermis
 
 import android.Manifest
 import android.app.*
@@ -137,8 +137,8 @@ class LocationForegroundService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "trackdel_channel",
-                "TrackDel Background Location",
+                "ermis_channel",
+                "ermis Background Location",
                 NotificationManager.IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannel(channel)
@@ -147,8 +147,8 @@ class LocationForegroundService : Service() {
     }
 
     private fun createNotification(): Notification {
-        return NotificationCompat.Builder(this, "trackdel_channel")
-            .setContentTitle("TrackDel")
+        return NotificationCompat.Builder(this, "ermis_channel")
+            .setContentTitle("ermis")
             .setContentText("Tracking location in background")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setOngoing(true)

@@ -17,7 +17,7 @@ if (keyPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.trackdel"
+    namespace = "com.ermis"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.trackdel"
+        applicationId = "com.ermis"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

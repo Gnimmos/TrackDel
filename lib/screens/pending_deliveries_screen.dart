@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trackdel/services/location_service.dart' as LocService;
-import 'package:trackdel/services/delivery_service.dart' as DelServ;
-import 'package:trackdel/services/auth_service.dart' as Auth;
+import 'package:ermis/services/location_service.dart' as LocService;
+import 'package:ermis/services/delivery_service.dart' as DelServ;
+import 'package:ermis/services/auth_service.dart' as Auth;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:trackdel/helpers/miui_autostart_helper.dart' ;
-import 'package:trackdel/helpers/location_permission_helper.dart';
+import 'package:ermis/helpers/miui_autostart_helper.dart' ;
+import 'package:ermis/helpers/location_permission_helper.dart';
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:vibration/vibration.dart';
+import 'package:ermis/helpers/outlet_picker_helper.dart';
 
 class PendingDeliveriesScreen extends StatefulWidget {
   const PendingDeliveriesScreen({super.key});
@@ -43,7 +44,8 @@ class _PendingDeliveriesScreenState extends State<PendingDeliveriesScreen> {
   Timer? _autoRefreshTimer;
   GoogleMapController? _mapController;
   Map<String, dynamic>? driverStats;
-final Map<String, Map<String, dynamic>> _w4Cache = {};
+  final Map<String, Map<String, dynamic>> _w4Cache = {};
+  String? _outletName;
 
   @override
   void initState() {
@@ -51,7 +53,7 @@ final Map<String, Map<String, dynamic>> _w4Cache = {};
 
     _pageController = PageController();
   _fetchDriverStats();
-
+  _loadOutletName(); 
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     await MIUIAutostartHelper.showIfNeeded(context);
 bool allowed = false;
@@ -291,6 +293,7 @@ void dispose() {
     _autoRefreshTimer?.cancel(); // Prevent multiple timers
     _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
     _fetchDeliveries(showSpinner: false);
+    _fetchDriverStats();
     });
   }
 
@@ -403,14 +406,14 @@ Widget _statItem(String label, dynamic value) {
         value?.toString() ?? '-',
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 16,      // Much larger number!
+          fontSize: 16,      
         ),
       ),
       const SizedBox(height: 2),
       Text(
         label,
         style: const TextStyle(
-          fontSize: 16,      // Bigger label text!
+          fontSize: 16,      
           color: Colors.grey,
           fontWeight: FontWeight.bold,
         ),
@@ -420,14 +423,39 @@ Widget _statItem(String label, dynamic value) {
   );
 }
 
-
+Future<void> _loadOutletName() async {
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    _outletName = prefs.getString('outlet_name');
+  });
+}
 
 @override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Pending Deliveries"),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Pending Deliveries"),
+            Text(
+              _outletName ?? 'No outlet',
+              style: TextStyle(
+                fontSize: 16,
+                color: _outletName == null ? Colors.grey : Colors.orange,
+              ),
+            ),
+          ],
+        ),
       actions: [
+      IconButton(
+        icon: const Icon(Icons.store),
+        tooltip: 'Change Outlet',
+        onPressed: () async {
+          await pickAndActivateOutlet(context);
+          await _loadOutletName(); 
+        },
+      ),
         IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: () => _fetchDeliveries(showSpinner: true),
@@ -681,9 +709,7 @@ void _handleDelivered(int index) async {
               ),
             ],
     ),
-  );
-
-  if (result == null) return; // Cancel pressed
+  ); // Cancel pressed
 
   final prefs = await SharedPreferences.getInstance();
   final driverId = prefs.getInt('driver_id');
@@ -721,7 +747,7 @@ void _handleDelivered(int index) async {
     // Complete order with payment, then mark as delivered
     final paymentSuccess = await DelServ.DeliveryService.completeOrder(
       orderId: orderId,
-      paymentMethod: result,
+      paymentMethod: result ?? "",
       totalAmount: totalAmount,
       driverId: driverId,
       sessionId: sessionId,
@@ -771,37 +797,56 @@ void _handleDelivered(int index) async {
     );
   }
 
- Future<void> markOnDelivered(Map<String, dynamic> delivery) async {
-  final String? externalOrderId = delivery['external_order_id'];
+  Future<void> markOnDelivered(Map<String, dynamic> delivery) async {
+    final String? externalOrderId = delivery['external_order_id'];
 
-  // Get the driver's current GPS
-  Position pos = await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.high,
-  );
-  
-  // Log the GPS position
-  print('[markOnDelivered] Driver GPS position: lat=${pos.latitude}, lng=${pos.longitude}, accuracy=${pos.accuracy}, timestamp=${pos.timestamp}');
-
-  final double? latitude = pos.latitude;
-  final double? longitude = pos.longitude;
-
-  // Only proceed if all values exist
-  if (externalOrderId != null && latitude != null && longitude != null) {
-    print('[markOnDelivered] Upserting address for externalOrderId=$externalOrderId, lat=$latitude, lng=$longitude');
-    final bool addressSaved = await DelServ.DeliveryService.upsertAddress(
-      externalOrderId: externalOrderId,
-      latitude: latitude,
-      longitude: longitude,
+    // Get the driver's current GPS
+    Position pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
     );
-    if (addressSaved) {
-      print('[markOnDelivered] Delivery address upserted successfully!');
+    
+    // Log the GPS position
+    print('[markOnDelivered] Driver GPS position: lat=${pos.latitude}, lng=${pos.longitude}, accuracy=${pos.accuracy}, timestamp=${pos.timestamp}');
+
+    final double? latitude = pos.latitude;
+    final double? longitude = pos.longitude;
+
+    // Only proceed if all values exist
+    if (externalOrderId != null && latitude != null && longitude != null) {
+          final bool addressSaved = await DelServ.DeliveryService.upsertAddress(
+        externalOrderId: externalOrderId,
+        latitude: latitude,
+        longitude: longitude,
+      );
+
+      print('[markOnDelivered] Upserting address for externalOrderId=$externalOrderId, lat=$latitude, lng=$longitude');
+      if (addressSaved) {
+        print('[markOnDelivered] Delivery address upserted successfully!');
+
+
+        const String apiKey = '1234567890'; 
+
+        final result = await DelServ.DeliveryService.markAsDeliveredCWD(
+          externalOrderId: externalOrderId,
+          apiKey: apiKey,
+        );
+
+        if (result['success']) {
+          print('[markOnDelivered] ✅ Successfully marked as delivered in CWD.');
+          _showAlert('Delivery Completed', 'The delivery has been successfully marked as delivered.');
+        } else {
+          print('[markOnDelivered] ❌ CWD delivery mark failed: ${result['message']}');
+          _showAlert('CWD Error', 'Delivery address was saved, but marking as delivered in CWD failed: ${result['message']}');
+        }
+
+
+      } else {
+        print('[markOnDelivered] Failed to upsert delivery address.');
+      }
     } else {
-      print('[markOnDelivered] Failed to upsert delivery address.');
+      print('[markOnDelivered] Cannot upsert address: missing values (externalOrderId=$externalOrderId, lat=$latitude, lng=$longitude)');
     }
-  } else {
-    print('[markOnDelivered] Cannot upsert address: missing values (externalOrderId=$externalOrderId, lat=$latitude, lng=$longitude)');
   }
-}
 
 
 

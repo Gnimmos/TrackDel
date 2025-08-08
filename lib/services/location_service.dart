@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NativeLocationService {
   static const _channel = MethodChannel('com.trackdel/location');
@@ -26,6 +27,7 @@ class LocationService {
   // Singleton pattern for easier usage throughout app
   static final LocationService instance = LocationService._internal();
   LocationService._internal();
+  static String? baseUrl = dotenv.env['API_URL'];
 
   final StreamController<int> _streamController = StreamController<int>.broadcast();
   Timer? _timer;
@@ -94,7 +96,7 @@ class LocationService {
         return;
       }
 
-      final url = Uri.parse('http://4.184.202.172:3212/api/driver/location');
+      final url = Uri.parse('$baseUrl/driver/location');
       final body = jsonEncode({
         "driver_id": driverId,
         "company_id": companyId,

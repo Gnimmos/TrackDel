@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trackdel/services/location_service.dart' as LocService;
-import 'package:trackdel/services/delivery_service.dart' as DelServ;
+import 'package:ermis/services/location_service.dart' as LocService;
+import 'package:ermis/services/delivery_service.dart' as DelServ;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 

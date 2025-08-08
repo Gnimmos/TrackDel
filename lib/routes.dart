@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trackdel/screens/login_screen.dart';
-import 'package:trackdel/screens/map_screen.dart';
-import 'package:trackdel/screens/pending_deliveries_screen.dart';
+import 'package:ermis/screens/login_screen.dart';
+import 'package:ermis/screens/map_screen.dart';
+import 'package:ermis/screens/pending_deliveries_screen.dart';
 
 
 final Map<String, WidgetBuilder> appRoutes = {

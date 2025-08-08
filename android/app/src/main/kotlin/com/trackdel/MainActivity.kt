@@ -1,4 +1,4 @@
-package com.trackdel
+package com.ermis
 
 import android.content.Intent
 import android.os.Build
@@ -9,16 +9,16 @@ import io.flutter.plugin.common.MethodChannel
 import android.util.Log
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.trackdel/location"
+    private val CHANNEL = "com.ermis/location"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("TrackDel", "MAINACTIVITY onCreate CALLED!")
+        Log.i("ermis", "MAINACTIVITY onCreate CALLED!")
        
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        Log.i("TrackDel", "configureFlutterEngine CALLED!")
+        Log.i("ermis", "configureFlutterEngine CALLED!")
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "startLocationService" -> {
