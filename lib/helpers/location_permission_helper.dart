@@ -19,7 +19,7 @@ class LocationPermissionHelper {
 
           // Open settings with guidance
           bool opened = await _showGoToSettingsDialog(context,
-               message: "To enable full delivery tracking, you must grant TrackDel 'Allow all the time' location access.\n\n"
+               message: "To enable full delivery tracking, you must grant Ermis 'Allow all the time' location access.\n\n"
                             "1. Tap 'Open Settings'.\n"
                             "2. Tap 'Permissions'.\n"
                             "3. Tap 'Location'.\n"
@@ -38,7 +38,7 @@ class LocationPermissionHelper {
           // Guide to settings
           bool opened = await _showGoToSettingsDialog(context,
               message:
-                  "TrackDel needs location permission to work.\n\nTap 'Open Settings' > Permissions > Location > Allow all the time.");
+                  "Ermis needs location permission to work.\n\nTap 'Open Settings' > Permissions > Location > Allow all the time.");
           if (!opened) return false;
         } else {
           // User denied, show again or just return

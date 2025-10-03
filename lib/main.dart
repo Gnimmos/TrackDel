@@ -6,17 +6,17 @@ import 'routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  runApp(const TrackDelApp());
+  runApp(const ErmisApp());
 }
 
-class TrackDelApp extends StatelessWidget {
-  const TrackDelApp({super.key});
+class ErmisApp extends StatelessWidget {
+  const ErmisApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return WithForegroundTask(
       child: MaterialApp(
-        title: 'TrackDel',
+        title: 'Ermis',
         theme: ThemeData(primarySwatch: Colors.blue),
         initialRoute: '/login',
         routes: appRoutes,

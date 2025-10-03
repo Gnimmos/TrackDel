@@ -142,6 +142,7 @@ static Future<Map<String, dynamic>?> resumeSession(int sessionId) async {
         }
       }
     }
+    
  static Future<List<dynamic>?> fetchOutletsForCompany() async {
     final prefs = await SharedPreferences.getInstance();
     final companyId = prefs.getInt('company_id');

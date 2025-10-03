@@ -70,5 +70,12 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
+        <intent>
+            <action android:name="com.worldline.payment.action.PROCESS_TRANSACTION" />
+        </intent>
+        <intent>
+            <action android:name="com.worldline.payment.action.PROCESS_INFORMATION" />
+        </intent>
+
     </queries>
 </manifest>
