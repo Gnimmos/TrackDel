@@ -34,7 +34,7 @@ class MIUIAutostartHelper {
   static Future<void> openAppSettings() async {
     final intent = AndroidIntent(
       action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
-      data: 'package:com.trackdel', // ← replace with your package if different
+      data: 'package:com.sunshine.ermis', // ← replace with your package if different
       flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
     );
     await intent.launch();
@@ -53,7 +53,7 @@ class _MIUIWarningDialog extends StatelessWidget {
         "For reliable background location, you must enable Autostart for this app:\n\n"
         "1. Open device Settings.\n"
         "2. Tap Apps > Permissions > Autostart.\n"
-        "3. Enable Autostart for TrackDel.\n\n"
+        "3. Enable Autostart for Ermis.\n\n"
         "Otherwise, background location tracking may not work!"
       ),
       actions: [

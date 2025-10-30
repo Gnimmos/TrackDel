@@ -17,7 +17,7 @@ if (keyPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.ermis"
+    namespace = "com.sunshine.ermis"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ermis"
+        applicationId = "com.sunshine.ermis"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

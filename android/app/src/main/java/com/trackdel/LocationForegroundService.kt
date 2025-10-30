@@ -1,4 +1,4 @@
-package com.ermis
+package com.sunshine.ermis
 
 import android.Manifest
 import android.app.*
@@ -99,7 +99,7 @@ class LocationForegroundService : Service() {
         private fun sendLocationToServer(driverId: Int, companyId: Int, lat: Double, lon: Double) {
             Log.d("LocationService", "Sending to server: driverId=$driverId, companyId=$companyId, lat=$lat, lon=$lon")
             try {
-                val url = URL("http://4.184.202.172:3212/api/driver/location")
+                val url = URL("http://4.184.202.172:3016/api/driver/location")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.connectTimeout = 10000
                 conn.readTimeout = 10000

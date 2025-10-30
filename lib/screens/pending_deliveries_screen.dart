@@ -15,6 +15,7 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:vibration/vibration.dart';
 import 'package:ermis/helpers/outlet_picker_helper.dart';
+import 'package:ermis/services/WorldlinePaymentInterface.dart';
 
 class PendingDeliveriesScreen extends StatefulWidget {
   const PendingDeliveriesScreen({super.key});
@@ -66,7 +67,7 @@ bool allowed = false;
         barrierDismissible: false,
         builder: (_) => AlertDialog(
           title: Text("Location Permission Required"),
-          content: Text("TrackDel needs location permission (Allow all the time) to track deliveries. Please grant permission to continue."),
+          content: Text("Ermis needs location permission (Allow all the time) to track deliveries. Please grant permission to continue."),
           actions: [
             TextButton(
               child: Text("Try Again"),
@@ -744,6 +745,31 @@ void _handleDelivered(int index) async {
       return;
     }
   } else if (!isPaid && (result == 'cash' || result == 'visa')) {
+      // if (result == 'visa') {
+      //   final extRef = (delivery['external_order_id'] ?? '').toString();
+      //   final orderRef = extRef.isNotEmpty ? extRef : (orderId.toString()); // fallback
+      //   final amountStr = totalAmount.toStringAsFixed(2); 
+
+      //   try {
+      //       final wpi = await WorldlinePaymentInterface.purchase(
+      //         amount: amountStr,         
+      //         currency: 'EUR',
+      //         orderReference: orderRef,  
+      //       );
+
+      //       if (!wpi.approved) {
+      //         final msg = wpi.response ?? 'Card payment not approved';
+      //         _showAlert('Payment', msg);
+      //         return;
+      //       }
+
+
+      //   } catch (e) {
+      //     _showAlert('Payment Error', e.toString()); 
+      //     return; // stop here; don't finalize order if the intent failed
+      //   }
+      // }
+
     // Complete order with payment, then mark as delivered
     final paymentSuccess = await DelServ.DeliveryService.completeOrder(
       orderId: orderId,
