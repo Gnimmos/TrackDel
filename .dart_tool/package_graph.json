@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "ermis",
-      "version": "1.1.0+10",
+      "version": "1.1.5+15",
       "dependencies": [
         "android_intent_plus",
         "bcrypt",

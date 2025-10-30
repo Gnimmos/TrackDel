@@ -34,7 +34,7 @@ class MIUIAutostartHelper {
   static Future<void> openAppSettings() async {
     final intent = AndroidIntent(
       action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
-      data: 'package:com.ermis', // ← replace with your package if different
+      data: 'package:com.sunshine.ermis', // ← replace with your package if different
       flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
     );
     await intent.launch();

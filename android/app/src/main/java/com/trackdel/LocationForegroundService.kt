@@ -1,4 +1,4 @@
-package com.ermis
+package com.sunshine.ermis
 
 import android.Manifest
 import android.app.*

@@ -1,5 +1,5 @@
 // android/app/src/main/kotlin/com/ermis/MainActivity.kt
-package com.ermis
+package com.sunshine.ermis
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -14,7 +14,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
     // Existing channel for your location service
-    private val LOCATION_CHANNEL = "com.ermis/location"
+    private val LOCATION_CHANNEL = "com.sunshine.ermis/location"
 
     // Payment channel name (must match your Dart)
     private val PAYMENT_CHANNEL = "worldline_payment_interface"

@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NativeLocationService {
-  static const _channel = MethodChannel('com.ermis/location');
+  static const _channel = MethodChannel('com.sunshine.ermis/location');
 
   static Future<void> startNativeLocationService(int driverId, int companyId) async {
     print('[NativeLocationService] Calling MethodChannel: $driverId/$companyId');
